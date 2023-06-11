@@ -27,6 +27,18 @@ const Feed = () => {
                 let feedData: FeedInterface[] = fetchedFeed.map(
                     (feedItem: FetchedFeed) => {
                         channelIds.push(feedItem.snippet.channelId);
+                        const thumbnails = feedItem.snippet.thumbnails;
+                        let maxResolutionImageURL = null,
+                            maxResolution = 0;
+                        for (const resolutionKey in feedItem.snippet
+                            .thumbnails) {
+                            const image = thumbnails[resolutionKey];
+                            const resolution = image.width * image.height;
+                            if (resolution > maxResolution) {
+                                maxResolution = resolution;
+                                maxResolutionImageURL = image.url;
+                            }
+                        }
                         return {
                             id: feedItem.id,
                             title: feedItem.snippet.title,
@@ -37,7 +49,7 @@ const Feed = () => {
                                 thumbnail: "",
                             },
                             duration: feedItem.contentDetails.duration,
-                            thumbnail: feedItem.snippet.thumbnails.standard.url,
+                            thumbnail: maxResolutionImageURL,
                             views: feedItem.statistics.viewCount,
                         };
                     }

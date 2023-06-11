@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import {
     FetchedChannelDetail,
     FetchedVideoDetail,
+    FetchedSearchResult,
     SearchResult,
 } from "../../../config/interfaces";
 import getChannelsDetailsByIds from "../../../DataFetchers/Channels/getByIds";
@@ -29,9 +30,22 @@ const SearchResults = () => {
                     const channelIds: string[] = [];
                     const videoIds: string[] = [];
                     let searchResultsData: SearchResult[] = searchResults.map(
-                        (searchResult: any) => {
+                        (searchResult: FetchedSearchResult) => {
                             channelIds.push(searchResult.snippet.channelId);
                             videoIds.push(searchResult.id.videoId);
+
+                            const thumbnails = searchResult.snippet.thumbnails;
+                            let maxResolutionImageURL = null,
+                                maxResolution = 0;
+                            for (const resolutionKey in thumbnails) {
+                                const image = thumbnails[resolutionKey];
+                                const resolution = image.width * image.height;
+
+                                if (resolution > maxResolution) {
+                                    maxResolution = resolution;
+                                    maxResolutionImageURL = image.url;
+                                }
+                            }
                             return {
                                 id: searchResult.id.videoId,
                                 title: searchResult.snippet.title,
@@ -43,8 +57,7 @@ const SearchResults = () => {
                                     thumbnail: "",
                                 },
                                 duration: "",
-                                thumbnail:
-                                    searchResult.snippet.thumbnails.high.url,
+                                thumbnail: maxResolutionImageURL,
                                 views: 0,
                             };
                         }

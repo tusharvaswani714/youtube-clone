@@ -35,11 +35,14 @@ export interface FetchedFeed {
         publishedAt: string;
         channelId: string;
         channelTitle: string;
-        thumbnails: {
-            standard: {
+        thumbnails: Record<
+            string,
+            {
                 url: string;
-            };
-        };
+                width: number;
+                height: number;
+            }
+        >;
     };
     contentDetails: {
         duration: string;
@@ -75,6 +78,27 @@ export interface FetchedVideoDetail {
 }
 
 // search result
+
+export interface FetchedSearchResult {
+    id: {
+        videoId: string;
+    };
+    snippet: {
+        title: string;
+        description: string;
+        publishedAt: string;
+        channelId: string;
+        channelTitle: string;
+        thumbnails: Record<
+            string,
+            {
+                url: string;
+                width: number;
+                height: number;
+            }
+        >;
+    };
+}
 
 export interface SearchResult {
     id: string;
