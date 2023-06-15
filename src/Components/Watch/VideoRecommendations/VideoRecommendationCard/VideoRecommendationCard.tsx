@@ -1,4 +1,5 @@
-import { Feed } from "../../../../config/interfaces";
+import { Link } from "react-router-dom";
+import { VideoRecommendation } from "../../../../config/interfaces";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import millify from "millify";
@@ -7,27 +8,22 @@ import {
     toSeconds as parsediso8601DurationToSeconds,
 } from "iso8601-duration";
 import TimeFormat from "hh-mm-ss";
-import { Link } from "react-router-dom";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-const FeedCard = ({
+const VideoRecommendationCard = ({
     id,
     title,
     publishedAt,
-    channel: {
-        id: channelId,
-        title: channelTitle,
-        thumbnail: channelThumbnail,
-    },
+    channel: { id: channelId, title: channelTitle },
     duration,
     thumbnail,
     views,
-}: Feed) => {
+}: VideoRecommendation) => {
     return (
-        <Link to={`/watch?v=${id}`} className="inline-block max-w-xl w-full">
-            <div className="relative">
+        <Link to={`/watch?v=${id}`} className="flex gap-4 w-full">
+            <div className="w-[40%] relative">
                 <div
                     className="w-full aspect-video bg-primary-light-700 rounded-[1.2rem] bg-cover bg-center"
                     style={{
@@ -42,21 +38,15 @@ const FeedCard = ({
                     )}
                 </div>
             </div>
-            <div className="flex gap-6 mt-6">
-                <Link to={`/channel/${channelId}`} className="shrink-0">
-                    <img
-                        className="w-[3.6rem] h-[3.6rem] rounded-full"
-                        src={channelThumbnail}
-                    />
-                </Link>
+            <div className="flex gap-6">
                 <div>
-                    <div className="text-primary-light-900 font-medium pr-10 max-h-[4.8rem] overflow-hidden text-ellipsis line-clamp-2">
+                    <div className="text-3xl text-primary-light-900 font-bold pr-10 max-h-[4.8rem] overflow-hidden text-ellipsis line-clamp-2">
                         {title}
                     </div>
-                    <div className="text-primary-light-800 text-[1.4rem]">
+                    <div className="text-primary-light-800 text-2xl">
                         <Link
                             to={`/channel/${channelId}`}
-                            className="capitalize hover:text-primary-light-900"
+                            className="inline-block capitalize hover:text-primary-light-900"
                         >
                             {channelTitle}
                         </Link>
@@ -77,4 +67,4 @@ const FeedCard = ({
     );
 };
 
-export default FeedCard;
+export default VideoRecommendationCard;

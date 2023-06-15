@@ -4,8 +4,8 @@ import SearchResultCardSkeleton from "./SearchResultCardSkeleton/SearchResultCar
 import getSearchResults from "../../../DataFetchers/Search/getResults";
 import { useSearchParams } from "react-router-dom";
 import {
-    FetchedChannelDetail,
-    FetchedVideoDetail,
+    FetchedChannelDetails,
+    SearchResultFetchedVideoDetails,
     FetchedSearchResult,
     SearchResult,
 } from "../../../config/interfaces";
@@ -65,14 +65,16 @@ const SearchResults = () => {
                     const getChannelDetailsByIdsResponse =
                         await getChannelsDetailsByIds({
                             channelIds,
+                            part: ["snippet"],
                         });
-                    const channelDetails: FetchedChannelDetail[] =
+                    const channelDetails: FetchedChannelDetails[] =
                         getChannelDetailsByIdsResponse.data.items;
                     const getVideoDetailsByIdsResponse =
                         await getVideoDetailsByIds({
                             videoIds,
+                            part: ["statistics", "contentDetails"],
                         });
-                    const videoDetails: FetchedVideoDetail[] =
+                    const videoDetails: SearchResultFetchedVideoDetails[] =
                         getVideoDetailsByIdsResponse.data.items;
                     searchResultsData = searchResultsData.map(
                         (searchResultItem) => {

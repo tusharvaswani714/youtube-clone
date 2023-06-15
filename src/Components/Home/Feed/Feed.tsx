@@ -6,7 +6,7 @@ import FeedCard from "./FeedCard/FeedCard";
 import {
     FetchedFeed,
     Feed as FeedInterface,
-    FetchedChannelDetail,
+    FetchedChannelDetails,
 } from "../../../config/interfaces";
 import getChannelsDetailsByIds from "../../../DataFetchers/Channels/getByIds.ts";
 import FeedCardSkeleton from "./FeedCardSkeleton/FeedCardSkeleton";
@@ -57,8 +57,9 @@ const Feed = () => {
                 const getChannelDetailsByIdsResponse =
                     await getChannelsDetailsByIds({
                         channelIds,
+                        part: ["snippet"],
                     });
-                const channelDetails: FetchedChannelDetail[] =
+                const channelDetails: FetchedChannelDetails[] =
                     getChannelDetailsByIdsResponse.data.items;
                 feedData = feedData.map((feed) => {
                     const channel = channelDetails.find(

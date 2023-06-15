@@ -6,19 +6,19 @@ interface FeedState {
     setCategories: (categories?: Category[]) => void;
     selectedCategory?: number;
     setSelectedCategory: (selectedCategory?: number) => void;
+    resetStore: () => void;
 }
 
 const initialState = {
     categories: undefined,
     selectedCategory: undefined,
-    feed: undefined,
 };
 
 const useFeedStore = create<FeedState>()((set) => ({
     ...initialState,
-    setCategories: (categories) => set(() => ({ categories })),
-    setSelectedCategory: (selectedCategory) =>
-        set(() => ({ selectedCategory })),
+    setCategories: (categories) => set({ categories }),
+    setSelectedCategory: (selectedCategory) => set({ selectedCategory }),
+    resetStore: () => set(initialState),
 }));
 
 export default useFeedStore;
