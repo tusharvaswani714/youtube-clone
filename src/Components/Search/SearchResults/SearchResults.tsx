@@ -118,16 +118,6 @@ const SearchResults = () => {
             loadMore={() => fetchNextPage()}
             hasMore={hasNextPage}
             threshold={10}
-            loader={
-                <>
-                    {(isFetching || isFetchingNextPage) &&
-                        new Array(12)
-                            .fill(0)
-                            .map((_, index) => (
-                                <SearchResultCardSkeleton key={index} />
-                            ))}
-                </>
-            }
         >
             {data?.pages.map((searchResultsPage, index) => (
                 <React.Fragment key={index}>
@@ -141,6 +131,12 @@ const SearchResults = () => {
                     )}
                 </React.Fragment>
             ))}
+            {(isFetching || isFetchingNextPage) &&
+                new Array(12)
+                    .fill(0)
+                    .map((_, index) => (
+                        <SearchResultCardSkeleton key={index} />
+                    ))}
         </InfiniteScroll>
     );
 };

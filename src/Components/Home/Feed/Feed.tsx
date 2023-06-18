@@ -89,16 +89,6 @@ const Feed = () => {
             loadMore={() => fetchNextPage()}
             hasMore={hasNextPage}
             threshold={10}
-            loader={
-                <>
-                    {(isFetching || isFetchingNextPage) &&
-                        new Array(12)
-                            .fill(0)
-                            .map((_, index) => (
-                                <FeedCardSkeleton key={index} />
-                            ))}
-                </>
-            }
         >
             {data?.pages.map((feedPage, index) => (
                 <React.Fragment key={index}>
@@ -107,6 +97,10 @@ const Feed = () => {
                     ))}
                 </React.Fragment>
             ))}
+            {(isFetching || isFetchingNextPage) &&
+                new Array(12)
+                    .fill(0)
+                    .map((_, index) => <FeedCardSkeleton key={index} />)}
         </InfiniteScroll>
     );
 };

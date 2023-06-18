@@ -13,6 +13,8 @@ import getCommentRepliesByCommentId from "../../../../DataFetchers/Replies/getCo
 import React, { useState } from "react";
 import classNames from "classnames";
 import { BsArrow90DegDown } from "react-icons/bs";
+import queryClient from "../../../../main.js";
+import { Oval } from "react-loader-spinner";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
@@ -68,9 +70,6 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
         getNextPageParam: (lastPage) => lastPage?.nextPageToken,
         enabled: !reply && showReplies,
     });
-    // useEffect(() => {
-    //     if (!showReplies) queryClient.resetQueries(["replies"]);
-    // }, [showReplies]);
     return (
         <div className="flex gap-[1.6rem]">
             <Link to={`/channel/${author.id}`}>
@@ -115,7 +114,14 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                 </div>
                 {!data.reply && data.numOfReplies ? (
                     <button
-                        onClick={() => setShowReplies((prev) => !prev)}
+                        onClick={() =>
+                            setShowReplies((prev) => {
+                                const newValue = !prev;
+                                if (!newValue)
+                                    queryClient.resetQueries(["replies"]);
+                                return newValue;
+                            })
+                        }
                         className="mt-2 inline-flex max-w-max items-center gap-4 -ml-5 px-[1.6rem] py-[0.8rem] text-secondary-blue-900 font-medium select-none hover:bg-secondary-blue-100 rounded-[2.2rem]"
                     >
                         {showReplies ? (
@@ -141,6 +147,17 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                                     )}
                                 </React.Fragment>
                             ))}
+                        {isFetching && (
+                            <Oval
+                                height={30}
+                                width={30}
+                                color="#aaa"
+                                ariaLabel="oval-loading"
+                                wrapperClass="m-auto"
+                                secondaryColor="transparent"
+                                strokeWidth={4}
+                            />
+                        )}
                         {hasNextPage && (
                             <button
                                 onClick={() => fetchNextPage()}

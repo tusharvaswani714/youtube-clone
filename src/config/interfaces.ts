@@ -126,6 +126,7 @@ export interface FetchedVideoDetails {
         embedHtml: string;
     };
     snippet: {
+        categoryId: string;
         title: string;
         description: string;
         channelId: string;
@@ -150,6 +151,7 @@ export interface VideoDetails {
     id: string;
     title: string;
     desc: string;
+    categoryId: number;
     authorChannelDetails: AuthorChannelDetails;
     publishedAt: string;
     likeCount: number;

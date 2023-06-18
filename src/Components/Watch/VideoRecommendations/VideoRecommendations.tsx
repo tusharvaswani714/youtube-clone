@@ -1,26 +1,90 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import useVideoDetailsStore from "../../../Zustand/videoDetails";
 import VideoRecommendationCard from "./VideoRecommendationCard/VideoRecommendationCard";
+import getFeed from "../../../DataFetchers/Feed/get";
+import { FetchedFeed, VideoRecommendation } from "../../../config/interfaces";
+import InfiniteScroll from "react-infinite-scroller";
+import React from "react";
+import VideoRecommendationCardSkeleton from "./VideoRecommendationCardSkeleton/VideoRecommendationCardSkeleton";
 
 const VideoRecommendations = () => {
-    const data = {
-        id: "48h57PspBec",
-        title: "$1 vs $1,000,000,000 Yacht!",
-        publishedAt: "2023-06-10T16:00:00Z",
-        channel: {
-            id: "UCX6OQ3DkcsbYNE6H8uQQuVA",
-            title: "MrBeast",
-            thumbnail:
-                "https://yt3.ggpht.com/ytc/AGIKgqOK6yA-HYL70-WVzQ6PyG9v04eRSo80GLQTkoBuUw=s88-c-k-c0x00ffffff-no-rj",
-        },
-        duration: "PT14M47S",
-        thumbnail: "https://i.ytimg.com/vi/48h57PspBec/maxresdefault.jpg",
-        views: 55252258,
-    };
+    const categoryId = useVideoDetailsStore(
+        (state) => state.videoDetails?.categoryId
+    );
+    const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
+        useInfiniteQuery({
+            queryKey: ["videoRecommendations", categoryId],
+            enabled: !!categoryId,
+            queryFn: async ({ pageParam }) => {
+                const getFeedResponse = await getFeed({
+                    categoryId: categoryId,
+                    nextPageToken: pageParam,
+                });
+                const fetchedFeed = getFeedResponse.data.items;
+                const channelIds: string[] = [];
+                const recommendations: VideoRecommendation[] = fetchedFeed.map(
+                    (recommendation: FetchedFeed) => {
+                        channelIds.push(recommendation.snippet.channelId);
+                        const thumbnails = recommendation.snippet.thumbnails;
+                        let maxResolutionImageURL = null,
+                            maxResolution = 0;
+                        for (const resolutionKey in recommendation.snippet
+                            .thumbnails) {
+                            const image = thumbnails[resolutionKey];
+                            const resolution = image.width * image.height;
+                            if (resolution > maxResolution) {
+                                maxResolution = resolution;
+                                maxResolutionImageURL = image.url;
+                            }
+                        }
+                        return {
+                            id: recommendation.id,
+                            title: recommendation.snippet.title,
+                            publishedAt: recommendation.snippet.publishedAt,
+                            channel: {
+                                id: recommendation.snippet.channelId,
+                                title: recommendation.snippet.channelTitle,
+                            },
+                            duration: recommendation.contentDetails.duration,
+                            thumbnail: maxResolutionImageURL,
+                            views: recommendation.statistics.viewCount,
+                        };
+                    }
+                );
+                return {
+                    recommendationItems: recommendations,
+                    nextPageToken: getFeedResponse.data.nextPageToken,
+                };
+            },
+            refetchOnWindowFocus: false,
+            getNextPageParam: (lastPage) => lastPage.nextPageToken,
+        });
     return (
-        <div className="flex flex-col gap-4">
-            {new Array(20).fill(data).map(() => (
-                <VideoRecommendationCard {...data} />
+        <InfiniteScroll
+            className="flex flex-col gap-4"
+            loadMore={() => fetchNextPage()}
+            hasMore={hasNextPage}
+            threshold={10}
+        >
+            {data?.pages.map((videoRecommendationsPage, index) => (
+                <React.Fragment key={index}>
+                    {videoRecommendationsPage.recommendationItems.map(
+                        (recommendation, index) => (
+                            <VideoRecommendationCard
+                                key={index}
+                                {...recommendation}
+                            />
+                        )
+                    )}
+                </React.Fragment>
             ))}
-        </div>
+            {(isFetching || isFetchingNextPage || !categoryId) &&
+                new Array(12)
+                    .fill(0)
+                    .map((_, index) => (
+                        <VideoRecommendationCardSkeleton key={index} />
+                    ))}
+        </InfiniteScroll>
     );
 };
 

@@ -23,7 +23,7 @@ const VideoRecommendationCard = ({
 }: VideoRecommendation) => {
     return (
         <Link to={`/watch?v=${id}`} className="flex gap-4 w-full">
-            <div className="w-[40%] relative">
+            <div className="w-[40%] flex-shrink-0 relative">
                 <div
                     className="w-full aspect-video bg-primary-light-700 rounded-[1.2rem] bg-cover bg-center"
                     style={{

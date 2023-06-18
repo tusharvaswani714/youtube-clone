@@ -26,6 +26,7 @@ const VideoPlayerAndDetails = () => {
                         videoIds: [videoId],
                     }
                 );
+                console.log(getVideoDetailsByIdsResponse);
                 const getChannelDetailsByIdsResponse =
                     await getChannelsDetailsByIds({
                         channelIds: [
@@ -51,6 +52,7 @@ const VideoPlayerAndDetails = () => {
                     id: videoDetails.id,
                     title: videoDetails.snippet.title,
                     desc: videoDetails.snippet.description,
+                    categoryId: Number(videoDetails.snippet.categoryId),
                     authorChannelDetails: {
                         id: videoDetails.snippet.channelId,
                         name: videoDetails.snippet.channelTitle,

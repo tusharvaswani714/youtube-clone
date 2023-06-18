@@ -78,16 +78,6 @@ const Comments = () => {
                 loadMore={() => fetchNextPage()}
                 hasMore={hasNextPage}
                 threshold={10}
-                loader={
-                    <>
-                        {(isFetching || isFetchingNextPage) &&
-                            new Array(12)
-                                .fill(0)
-                                .map((_, index) => (
-                                    <CommentSkeleton key={index} />
-                                ))}
-                    </>
-                }
             >
                 {data?.pages.map((commentPage, index) => (
                     <React.Fragment key={index}>
@@ -99,6 +89,10 @@ const Comments = () => {
                         ))}
                     </React.Fragment>
                 ))}
+                {(isFetching || isFetchingNextPage) &&
+                    new Array(12)
+                        .fill(0)
+                        .map((_, index) => <CommentSkeleton key={index} />)}
             </InfiniteScroll>
         </div>
     );
