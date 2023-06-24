@@ -12,9 +12,9 @@ export interface Category {
     name: string;
 }
 
-// feed
+// video card
 
-export interface Feed {
+export interface VideoCard {
     id: string;
     title: string;
     publishedAt: string;
@@ -27,6 +27,10 @@ export interface Feed {
     thumbnail: string;
     views: number;
 }
+
+// feed
+
+export type Feed = VideoCard;
 
 export interface FetchedFeed {
     id: string;
@@ -236,3 +240,15 @@ export type CommentOrCommentReply = CommentOrCommentReplyCommon &
               reply: true;
           }
     );
+
+// channel details
+
+export interface ChannelDetails {
+    id: string;
+    bannerURL?: string;
+    profileURL: string;
+    name: string;
+    subscribers: number;
+    numOfVideos: number;
+    desc: string;
+}

@@ -1,7 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const FeedCardSkeleton = () => {
+const VideoCardSkeleton = () => {
     return (
         <div className="max-w-xl w-full">
             <Skeleton
@@ -37,4 +37,4 @@ const FeedCardSkeleton = () => {
     );
 };
 
-export default FeedCardSkeleton;
+export default VideoCardSkeleton;

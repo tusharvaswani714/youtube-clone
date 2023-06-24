@@ -1,11 +1,11 @@
 import axiosInstance from "..";
 
-interface GetFeedData {
+interface GetVideosData {
     categoryId?: number;
     nextPageToken?: string;
 }
 
-const getFeed = async ({ categoryId, nextPageToken }: GetFeedData) =>
+const getVideos = async ({ categoryId, nextPageToken }: GetVideosData) =>
     await axiosInstance.get("videos", {
         params: {
             part: "snippet,statistics,contentDetails",
@@ -17,4 +17,4 @@ const getFeed = async ({ categoryId, nextPageToken }: GetFeedData) =>
         },
     });
 
-export default getFeed;
+export default getVideos;

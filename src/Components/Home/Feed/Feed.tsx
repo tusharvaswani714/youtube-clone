@@ -1,15 +1,15 @@
 import React from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import useFeedStore from "../../../Zustand/feed";
-import getFeed from "../../../DataFetchers/Feed/get";
-import FeedCard from "./FeedCard/FeedCard";
+import getVideos from "../../../DataFetchers/Videos/get.ts";
+import FeedCard from "../../Global/VideoCard/VideoCard.tsx";
 import {
     FetchedFeed,
     Feed as FeedInterface,
     FetchedChannelDetails,
 } from "../../../config/interfaces";
 import getChannelsDetailsByIds from "../../../DataFetchers/Channels/getByIds.ts";
-import FeedCardSkeleton from "./FeedCardSkeleton/FeedCardSkeleton";
+import FeedCardSkeleton from "../../Global/VideoCardSkeleton/VideoCardSkeleton";
 import InfiniteScroll from "react-infinite-scroller";
 
 const Feed = () => {
@@ -18,11 +18,11 @@ const Feed = () => {
         useInfiniteQuery({
             queryKey: ["feed", selectedCategory],
             queryFn: async ({ pageParam }) => {
-                const getFeedResponse = await getFeed({
+                const getVideosResponse = await getVideos({
                     categoryId: selectedCategory,
                     nextPageToken: pageParam,
                 });
-                const fetchedFeed = getFeedResponse.data.items;
+                const fetchedFeed = getVideosResponse.data.items;
                 const channelIds: string[] = [];
                 let feedData: FeedInterface[] = fetchedFeed.map(
                     (feedItem: FetchedFeed) => {
@@ -77,7 +77,7 @@ const Feed = () => {
                 });
                 return {
                     feedItems: feedData,
-                    nextPageToken: getFeedResponse.data.nextPageToken,
+                    nextPageToken: getVideosResponse.data.nextPageToken,
                 };
             },
             refetchOnWindowFocus: false,

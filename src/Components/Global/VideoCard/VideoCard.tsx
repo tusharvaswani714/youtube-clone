@@ -1,4 +1,4 @@
-import { Feed } from "../../../../config/interfaces";
+import { VideoCard as VideoCardInterface } from "../../../config/interfaces";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import millify from "millify";
@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-const FeedCard = ({
+const VideoCard = ({
     id,
     title,
     publishedAt,
@@ -24,7 +24,7 @@ const FeedCard = ({
     duration,
     thumbnail,
     views,
-}: Feed) => {
+}: VideoCardInterface) => {
     return (
         <Link to={`/watch?v=${id}`} className="inline-block max-w-xl w-full">
             <div className="relative">
@@ -77,4 +77,4 @@ const FeedCard = ({
     );
 };
 
-export default FeedCard;
+export default VideoCard;

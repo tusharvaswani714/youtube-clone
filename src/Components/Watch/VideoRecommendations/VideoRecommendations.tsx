@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import useVideoDetailsStore from "../../../Zustand/videoDetails";
 import VideoRecommendationCard from "./VideoRecommendationCard/VideoRecommendationCard";
-import getFeed from "../../../DataFetchers/Feed/get";
+import getVideos from "../../../DataFetchers/Videos/get";
 import { FetchedFeed, VideoRecommendation } from "../../../config/interfaces";
 import InfiniteScroll from "react-infinite-scroller";
 import React from "react";
@@ -16,11 +16,11 @@ const VideoRecommendations = () => {
             queryKey: ["videoRecommendations", categoryId],
             enabled: !!categoryId,
             queryFn: async ({ pageParam }) => {
-                const getFeedResponse = await getFeed({
+                const getVideosResponse = await getVideos({
                     categoryId: categoryId,
                     nextPageToken: pageParam,
                 });
-                const fetchedFeed = getFeedResponse.data.items;
+                const fetchedFeed = getVideosResponse.data.items;
                 const channelIds: string[] = [];
                 const recommendations: VideoRecommendation[] = fetchedFeed.map(
                     (recommendation: FetchedFeed) => {
@@ -28,8 +28,7 @@ const VideoRecommendations = () => {
                         const thumbnails = recommendation.snippet.thumbnails;
                         let maxResolutionImageURL = null,
                             maxResolution = 0;
-                        for (const resolutionKey in recommendation.snippet
-                            .thumbnails) {
+                        for (const resolutionKey in thumbnails) {
                             const image = thumbnails[resolutionKey];
                             const resolution = image.width * image.height;
                             if (resolution > maxResolution) {
@@ -53,7 +52,7 @@ const VideoRecommendations = () => {
                 );
                 return {
                     recommendationItems: recommendations,
-                    nextPageToken: getFeedResponse.data.nextPageToken,
+                    nextPageToken: getVideosResponse.data.nextPageToken,
                 };
             },
             refetchOnWindowFocus: false,
