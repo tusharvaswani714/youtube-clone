@@ -4,13 +4,14 @@ import useFeedStore from "../../../Zustand/feed";
 import getVideos from "../../../DataFetchers/Videos/get.ts";
 import FeedCard from "../../Global/VideoCard/VideoCard.tsx";
 import {
-    FetchedFeed,
-    Feed as FeedInterface,
+    FetchedVideoDetails,
+    VideoCard as FeedInterface,
     FetchedChannelDetails,
 } from "../../../config/interfaces";
 import getChannelsDetailsByIds from "../../../DataFetchers/Channels/getByIds.ts";
 import FeedCardSkeleton from "../../Global/VideoCardSkeleton/VideoCardSkeleton";
 import InfiniteScroll from "react-infinite-scroller";
+import getMaxResolutionImage from "../../../lib/getMaxResolutionImage.ts";
 
 const Feed = () => {
     const selectedCategory = useFeedStore((state) => state.selectedCategory);
@@ -24,21 +25,12 @@ const Feed = () => {
                 });
                 const fetchedFeed = getVideosResponse.data.items;
                 const channelIds: string[] = [];
-                let feedData: FeedInterface[] = fetchedFeed.map(
-                    (feedItem: FetchedFeed) => {
+                let feedItems: FeedInterface[] = fetchedFeed.map(
+                    (feedItem: FetchedVideoDetails) => {
                         channelIds.push(feedItem.snippet.channelId);
                         const thumbnails = feedItem.snippet.thumbnails;
-                        let maxResolutionImageURL = null,
-                            maxResolution = 0;
-                        for (const resolutionKey in feedItem.snippet
-                            .thumbnails) {
-                            const image = thumbnails[resolutionKey];
-                            const resolution = image.width * image.height;
-                            if (resolution > maxResolution) {
-                                maxResolution = resolution;
-                                maxResolutionImageURL = image.url;
-                            }
-                        }
+                        const { maxResolutionImageURL } =
+                            getMaxResolutionImage(thumbnails);
                         return {
                             id: feedItem.id,
                             title: feedItem.snippet.title,
@@ -61,14 +53,14 @@ const Feed = () => {
                     });
                 const channelDetails: FetchedChannelDetails[] =
                     getChannelDetailsByIdsResponse.data.items;
-                feedData = feedData.map((feed) => {
+                feedItems = feedItems.map((feedItem) => {
                     const channel = channelDetails.find(
-                        (channel) => channel.id === feed.channel.id
+                        (channel) => channel.id === feedItem.channel.id
                     );
                     return {
-                        ...feed,
+                        ...feedItem,
                         channel: {
-                            ...feed.channel,
+                            ...feedItem.channel,
                             thumbnail:
                                 channel &&
                                 channel.snippet.thumbnails.default.url,
@@ -76,7 +68,7 @@ const Feed = () => {
                     };
                 });
                 return {
-                    feedItems: feedData,
+                    feedItems,
                     nextPageToken: getVideosResponse.data.nextPageToken,
                 };
             },

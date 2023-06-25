@@ -9,7 +9,8 @@ import {
 } from "iso8601-duration";
 import TimeFormat from "hh-mm-ss";
 
-TimeAgo.addDefaultLocale(en);
+TimeAgo.setDefaultLocale(en.locale);
+TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 const VideoRecommendationCard = ({

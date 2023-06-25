@@ -5,7 +5,7 @@ import getSearchResults from "../../../DataFetchers/Search/getResults";
 import { useSearchParams } from "react-router-dom";
 import {
     FetchedChannelDetails,
-    SearchResultFetchedVideoDetails,
+    FetchedVideoDetails,
     FetchedSearchResult,
     SearchResult,
 } from "../../../config/interfaces";
@@ -13,6 +13,7 @@ import getChannelsDetailsByIds from "../../../DataFetchers/Channels/getByIds";
 import getVideoDetailsByIds from "../../../DataFetchers/Videos/getByIds";
 import InfiniteScroll from "react-infinite-scroller";
 import React from "react";
+import getMaxResolutionImage from "../../../lib/getMaxResolutionImage";
 
 const SearchResults = () => {
     const [searchParams] = useSearchParams();
@@ -26,42 +27,37 @@ const SearchResults = () => {
                         searchQuery,
                         nextPageToken: pageParam,
                     });
-                    const searchResults = getSearchResultsResponse.data.items;
+                    const fetchedSearchResults: FetchedSearchResult[] =
+                        getSearchResultsResponse.data.items;
                     const channelIds: string[] = [];
                     const videoIds: string[] = [];
-                    let searchResultsData: SearchResult[] = searchResults.map(
-                        (searchResult: FetchedSearchResult) => {
-                            channelIds.push(searchResult.snippet.channelId);
-                            videoIds.push(searchResult.id.videoId);
-
-                            const thumbnails = searchResult.snippet.thumbnails;
-                            let maxResolutionImageURL = null,
-                                maxResolution = 0;
-                            for (const resolutionKey in thumbnails) {
-                                const image = thumbnails[resolutionKey];
-                                const resolution = image.width * image.height;
-
-                                if (resolution > maxResolution) {
-                                    maxResolution = resolution;
-                                    maxResolutionImageURL = image.url;
-                                }
-                            }
+                    let searchResults: SearchResult[] =
+                        fetchedSearchResults.map((fetchedSearchResult) => {
+                            channelIds.push(
+                                fetchedSearchResult.snippet.channelId
+                            );
+                            videoIds.push(fetchedSearchResult.id.videoId);
+                            const thumbnails =
+                                fetchedSearchResult.snippet.thumbnails;
+                            const { maxResolutionImageURL } =
+                                getMaxResolutionImage(thumbnails);
                             return {
-                                id: searchResult.id.videoId,
-                                title: searchResult.snippet.title,
-                                desc: searchResult.snippet.description,
-                                publishedAt: searchResult.snippet.publishedAt,
+                                id: fetchedSearchResult.id.videoId,
+                                title: fetchedSearchResult.snippet.title,
+                                desc: fetchedSearchResult.snippet.description,
+                                publishedAt:
+                                    fetchedSearchResult.snippet.publishedAt,
                                 channel: {
-                                    id: searchResult.snippet.channelId,
-                                    title: searchResult.snippet.channelTitle,
+                                    id: fetchedSearchResult.snippet.channelId,
+                                    title: fetchedSearchResult.snippet
+                                        .channelTitle,
                                     thumbnail: "",
                                 },
                                 duration: "",
-                                thumbnail: maxResolutionImageURL,
+                                thumbnail: maxResolutionImageURL as string,
                                 views: 0,
                             };
-                        }
-                    );
+                        });
                     const getChannelDetailsByIdsResponse =
                         await getChannelsDetailsByIds({
                             channelIds,
@@ -74,36 +70,33 @@ const SearchResults = () => {
                             videoIds,
                             part: ["statistics", "contentDetails"],
                         });
-                    const videoDetails: SearchResultFetchedVideoDetails[] =
+                    const videoDetails: FetchedVideoDetails[] =
                         getVideoDetailsByIdsResponse.data.items;
-                    searchResultsData = searchResultsData.map(
-                        (searchResultItem) => {
-                            const channel = channelDetails.find(
-                                (channel) =>
-                                    channel.id === searchResultItem.channel.id
-                            );
-                            const video = videoDetails.find(
-                                (video) => video.id === searchResultItem.id
-                            );
-                            return {
-                                ...searchResultItem,
-                                channel: {
-                                    ...searchResultItem.channel,
-                                    thumbnail:
-                                        channel &&
-                                        channel.snippet.thumbnails.default.url,
-                                },
-                                duration: video
-                                    ? video.contentDetails.duration
-                                    : "",
-                                views: video
-                                    ? Number(video.statistics.viewCount)
-                                    : 0,
-                            };
-                        }
-                    );
+                    searchResults = searchResults.map((searchResult) => {
+                        const channel = channelDetails.find(
+                            (channel) => channel.id === searchResult.channel.id
+                        );
+                        const video = videoDetails.find(
+                            (video) => video.id === searchResult.id
+                        );
+                        return {
+                            ...searchResult,
+                            channel: {
+                                ...searchResult.channel,
+                                thumbnail:
+                                    channel &&
+                                    channel.snippet.thumbnails.default.url,
+                            },
+                            duration: video
+                                ? video.contentDetails.duration
+                                : "",
+                            views: video
+                                ? Number(video.statistics.viewCount)
+                                : 0,
+                        };
+                    });
                     return {
-                        searchResults: searchResultsData,
+                        searchResults,
                         nextPageToken:
                             getSearchResultsResponse.data.nextPageToken,
                     };

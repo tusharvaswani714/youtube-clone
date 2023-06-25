@@ -16,7 +16,8 @@ import { BsArrow90DegDown } from "react-icons/bs";
 import queryClient from "../../../../main.js";
 import { Oval } from "react-loader-spinner";
 
-TimeAgo.addDefaultLocale(en);
+TimeAgo.setDefaultLocale(en.locale);
+TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
@@ -147,7 +148,7 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                                     )}
                                 </React.Fragment>
                             ))}
-                        {isFetching && (
+                        {(isFetching || isFetchingNextPage) && (
                             <Oval
                                 height={30}
                                 width={30}

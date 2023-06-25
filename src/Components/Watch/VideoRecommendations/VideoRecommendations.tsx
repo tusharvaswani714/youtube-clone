@@ -2,10 +2,14 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import useVideoDetailsStore from "../../../Zustand/videoDetails";
 import VideoRecommendationCard from "./VideoRecommendationCard/VideoRecommendationCard";
 import getVideos from "../../../DataFetchers/Videos/get";
-import { FetchedFeed, VideoRecommendation } from "../../../config/interfaces";
+import {
+    FetchedVideoDetails,
+    VideoRecommendation,
+} from "../../../config/interfaces";
 import InfiniteScroll from "react-infinite-scroller";
 import React from "react";
 import VideoRecommendationCardSkeleton from "./VideoRecommendationCardSkeleton/VideoRecommendationCardSkeleton";
+import getMaxResolutionImage from "../../../lib/getMaxResolutionImage";
 
 const VideoRecommendations = () => {
     const categoryId = useVideoDetailsStore(
@@ -20,36 +24,37 @@ const VideoRecommendations = () => {
                     categoryId: categoryId,
                     nextPageToken: pageParam,
                 });
-                const fetchedFeed = getVideosResponse.data.items;
+                const fetchedRecommendations = getVideosResponse.data.items;
                 const channelIds: string[] = [];
-                const recommendations: VideoRecommendation[] = fetchedFeed.map(
-                    (recommendation: FetchedFeed) => {
-                        channelIds.push(recommendation.snippet.channelId);
-                        const thumbnails = recommendation.snippet.thumbnails;
-                        let maxResolutionImageURL = null,
-                            maxResolution = 0;
-                        for (const resolutionKey in thumbnails) {
-                            const image = thumbnails[resolutionKey];
-                            const resolution = image.width * image.height;
-                            if (resolution > maxResolution) {
-                                maxResolution = resolution;
-                                maxResolutionImageURL = image.url;
-                            }
+                const recommendations: VideoRecommendation[] =
+                    fetchedRecommendations.map(
+                        (fetchedRecommendation: FetchedVideoDetails) => {
+                            channelIds.push(
+                                fetchedRecommendation.snippet.channelId
+                            );
+                            const thumbnails =
+                                fetchedRecommendation.snippet.thumbnails;
+                            const { maxResolutionImageURL } =
+                                getMaxResolutionImage(thumbnails);
+                            return {
+                                id: fetchedRecommendation.id,
+                                title: fetchedRecommendation.snippet.title,
+                                publishedAt:
+                                    fetchedRecommendation.snippet.publishedAt,
+                                channel: {
+                                    id: fetchedRecommendation.snippet.channelId,
+                                    title: fetchedRecommendation.snippet
+                                        .channelTitle,
+                                },
+                                duration:
+                                    fetchedRecommendation.contentDetails
+                                        .duration,
+                                thumbnail: maxResolutionImageURL,
+                                views: fetchedRecommendation.statistics
+                                    .viewCount,
+                            };
                         }
-                        return {
-                            id: recommendation.id,
-                            title: recommendation.snippet.title,
-                            publishedAt: recommendation.snippet.publishedAt,
-                            channel: {
-                                id: recommendation.snippet.channelId,
-                                title: recommendation.snippet.channelTitle,
-                            },
-                            duration: recommendation.contentDetails.duration,
-                            thumbnail: maxResolutionImageURL,
-                            views: recommendation.statistics.viewCount,
-                        };
-                    }
-                );
+                    );
                 return {
                     recommendationItems: recommendations,
                     nextPageToken: getVideosResponse.data.nextPageToken,

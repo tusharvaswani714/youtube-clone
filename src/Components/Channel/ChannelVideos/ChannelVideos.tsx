@@ -4,13 +4,14 @@ import useChannelDetailsStore from "../../../Zustand/channelDetails";
 import getSearchResults from "../../../DataFetchers/Search/getResults";
 import {
     FetchedSearchResult,
+    FetchedVideoDetails,
     SearchResult,
-    SearchResultFetchedVideoDetails,
 } from "../../../config/interfaces";
 import getVideoDetailsByIds from "../../../DataFetchers/Videos/getByIds";
 import InfiniteScroll from "react-infinite-scroller";
 import VideoCard from "../../Global/VideoCard/VideoCard";
 import VideoCardSkeleton from "../../Global/VideoCardSkeleton/VideoCardSkeleton";
+import getMaxResolutionImage from "../../../lib/getMaxResolutionImage";
 
 const ChannelVideos = () => {
     const channelId = useChannelDetailsStore(
@@ -30,25 +31,13 @@ const ChannelVideos = () => {
                     order: "date",
                 });
                 const searchResults = getSearchResultsResponse.data.items;
-                const channelIds: string[] = [];
                 const videoIds: string[] = [];
-                let searchResultsData: SearchResult[] = searchResults.map(
+                let channelVideos: SearchResult[] = searchResults.map(
                     (searchResult: FetchedSearchResult) => {
-                        channelIds.push(searchResult.snippet.channelId);
                         videoIds.push(searchResult.id.videoId);
-
                         const thumbnails = searchResult.snippet.thumbnails;
-                        let maxResolutionImageURL = null,
-                            maxResolution = 0;
-                        for (const resolutionKey in thumbnails) {
-                            const image = thumbnails[resolutionKey];
-                            const resolution = image.width * image.height;
-
-                            if (resolution > maxResolution) {
-                                maxResolution = resolution;
-                                maxResolutionImageURL = image.url;
-                            }
-                        }
+                        const { maxResolutionImageURL } =
+                            getMaxResolutionImage(thumbnails);
                         return {
                             id: searchResult.id.videoId,
                             title: searchResult.snippet.title,
@@ -71,30 +60,24 @@ const ChannelVideos = () => {
                         part: ["statistics", "contentDetails"],
                     }
                 );
-                const videoDetails: SearchResultFetchedVideoDetails[] =
+                const videoDetails: FetchedVideoDetails[] =
                     getVideoDetailsByIdsResponse.data.items;
-                searchResultsData = searchResultsData.map(
-                    (searchResultItem) => {
-                        const video = videoDetails.find(
-                            (video) => video.id === searchResultItem.id
-                        );
-                        return {
-                            ...searchResultItem,
-                            channel: {
-                                ...searchResultItem.channel,
-                                thumbnail,
-                            },
-                            duration: video
-                                ? video.contentDetails.duration
-                                : "",
-                            views: video
-                                ? Number(video.statistics.viewCount)
-                                : 0,
-                        };
-                    }
-                );
+                channelVideos = channelVideos.map((searchResultItem) => {
+                    const video = videoDetails.find(
+                        (video) => video.id === searchResultItem.id
+                    );
+                    return {
+                        ...searchResultItem,
+                        channel: {
+                            ...searchResultItem.channel,
+                            thumbnail,
+                        },
+                        duration: video ? video.contentDetails.duration : "",
+                        views: video ? Number(video.statistics.viewCount) : 0,
+                    };
+                });
                 return {
-                    searchResults: searchResultsData,
+                    channelVideos,
                     nextPageToken: getSearchResultsResponse.data.nextPageToken,
                 };
             },
@@ -108,11 +91,11 @@ const ChannelVideos = () => {
             hasMore={hasNextPage}
             threshold={10}
         >
-            {data?.pages.map((searchResultsPage, index) => (
+            {data?.pages.map((channelVideosResultsPage, index) => (
                 <React.Fragment key={index}>
-                    {searchResultsPage?.searchResults.map(
-                        (searchResultItem, index) => (
-                            <VideoCard key={index} {...searchResultItem} />
+                    {channelVideosResultsPage?.channelVideos.map(
+                        (channelVideo, index) => (
+                            <VideoCard key={index} {...channelVideo} />
                         )
                     )}
                 </React.Fragment>

@@ -26,7 +26,6 @@ const VideoPlayerAndDetails = () => {
                         videoIds: [videoId],
                     }
                 );
-                console.log(getVideoDetailsByIdsResponse);
                 const getChannelDetailsByIdsResponse =
                     await getChannelsDetailsByIds({
                         channelIds: [

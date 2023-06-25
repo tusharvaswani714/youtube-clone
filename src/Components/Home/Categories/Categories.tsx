@@ -13,14 +13,14 @@ export const Categories = () => {
         queryKey: ["categories"],
         queryFn: async () => {
             const response = await getAllVideoCategories();
-            return response.data;
+            return response.data.items;
         },
         refetchOnWindowFocus: false,
-        onSuccess: (data) => {
+        onSuccess: (categories: FetchedCategory[]) => {
             setCategories(
-                data.items.map((item: FetchedCategory) => ({
-                    id: item.id,
-                    name: item.snippet.title,
+                categories.map((category) => ({
+                    id: category.id,
+                    name: category.snippet.title,
                 }))
             );
         },

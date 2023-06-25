@@ -1,3 +1,13 @@
+// image
+
+import { Images } from "./types";
+
+export interface Image {
+    width: number;
+    height: number;
+    url: string;
+}
+
 // categories
 
 export interface FetchedCategory {
@@ -28,59 +38,33 @@ export interface VideoCard {
     views: number;
 }
 
-// feed
-
-export type Feed = VideoCard;
-
-export interface FetchedFeed {
-    id: string;
-    snippet: {
-        title: string;
-        publishedAt: string;
-        channelId: string;
-        channelTitle: string;
-        thumbnails: Record<
-            string,
-            {
-                url: string;
-                width: number;
-                height: number;
-            }
-        >;
-    };
-    contentDetails: {
-        duration: string;
-    };
-    statistics: {
-        viewCount: number;
-    };
-}
-
 // channel details
+
+export interface ChannelDetails {
+    id: string;
+    bannerURL?: string;
+    profileURL: string;
+    name: string;
+    subscribers: number;
+    numOfVideos: number;
+    desc: string;
+}
 
 export interface FetchedChannelDetails {
     id: string;
     snippet: {
-        thumbnails: {
-            default: {
-                url: string;
-            };
-        };
+        thumbnails: Images;
+        title: string;
+        description: string;
     };
     statistics: {
         subscriberCount: number;
+        videoCount: number;
     };
-}
-
-// video details
-
-export interface SearchResultFetchedVideoDetails {
-    id: string;
-    contentDetails: {
-        duration: string;
-    };
-    statistics: {
-        viewCount: string;
+    brandingSettings: {
+        image: {
+            bannerExternalUrl: string;
+        };
     };
 }
 
@@ -96,14 +80,7 @@ export interface FetchedSearchResult {
         publishedAt: string;
         channelId: string;
         channelTitle: string;
-        thumbnails: Record<
-            string,
-            {
-                url: string;
-                width: number;
-                height: number;
-            }
-        >;
+        thumbnails: Images;
     };
 }
 
@@ -136,11 +113,15 @@ export interface FetchedVideoDetails {
         channelId: string;
         channelTitle: string;
         publishedAt: string;
+        thumbnails: Images;
     };
     statistics: {
         likeCount: number;
         viewCount: number;
         commentCount: number;
+    };
+    contentDetails: {
+        duration: string;
     };
 }
 
@@ -240,15 +221,3 @@ export type CommentOrCommentReply = CommentOrCommentReplyCommon &
               reply: true;
           }
     );
-
-// channel details
-
-export interface ChannelDetails {
-    id: string;
-    bannerURL?: string;
-    profileURL: string;
-    name: string;
-    subscribers: number;
-    numOfVideos: number;
-    desc: string;
-}

@@ -9,7 +9,8 @@ import {
 import TimeFormat from "hh-mm-ss";
 import { Link, useNavigate } from "react-router-dom";
 
-TimeAgo.addDefaultLocale(en);
+TimeAgo.setDefaultLocale(en.locale);
+TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 const SearchResultCard = ({
