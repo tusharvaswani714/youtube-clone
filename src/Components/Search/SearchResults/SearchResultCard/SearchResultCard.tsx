@@ -30,14 +30,11 @@ const SearchResultCard = ({
     const navigate = useNavigate();
     return (
         <div
-            className="flex gap-[1.6rem] cursor-pointer"
+            className="flex gap-[1.6rem] cursor-pointer flex-col xs:flex-row"
             onClick={() => navigate(`/watch?v=${id}`)}
         >
-            <div className="relative max-w-xl w-full flex-shrink-0">
-                <Link
-                    className="block w-full aspect-video"
-                    to={`/watch?v=${id}`}
-                >
+            <div className="relative min-w-[24rem] xs:max-w-xl flex-1 aspect-video">
+                <Link className="block w-full h-full" to={`/watch?v=${id}`}>
                     <div
                         className="w-full h-full bg-primary-light-700 rounded-[1.2rem] bg-cover bg-center"
                         style={{
@@ -57,7 +54,7 @@ const SearchResultCard = ({
                 <div>
                     <Link
                         to={`/watch?v=${id}`}
-                        className="text-primary-light-900 text-[1.8rem] font-normal max-h-[4.8rem] overflow-hidden text-ellipsis line-clamp-2"
+                        className="text-primary-light-900 xs:text-[1.8rem] font-normal max-h-[4.8rem] overflow-hidden text-ellipsis line-clamp-2"
                     >
                         {title}
                     </Link>
@@ -88,7 +85,7 @@ const SearchResultCard = ({
                         {channelTitle}
                     </Link>
                 </div>
-                <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+                <div className="overflow-hidden text-[1.2rem] text-ellipsis whitespace-nowrap">
                     {desc}
                 </div>
             </div>

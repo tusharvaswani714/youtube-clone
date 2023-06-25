@@ -107,7 +107,7 @@ const SearchResults = () => {
         });
     return (
         <InfiniteScroll
-            className="max-w-[100rem] m-auto py-[1.6rem] flex flex-col gap-[1.6rem]"
+            className="max-w-[100rem] m-auto py-[1.6rem] px-10 flex flex-col gap-[1.6rem]"
             loadMore={() => fetchNextPage()}
             hasMore={hasNextPage}
             threshold={10}
