@@ -3,12 +3,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const SearchResultCardSkeleton = () => {
     return (
-        <div className="flex gap-[1.6rem]">
-            <div className="relative max-w-xl w-full flex-shrink-0">
+        <div className="flex gap-[1.6rem] flex-col xs:flex-row">
+            <div className="min-w-[24rem] xs:max-w-xl w-full aspect-video flex-shrink-0">
                 <Skeleton
                     baseColor="#202020"
                     highlightColor="#444"
-                    className="w-full aspect-video"
+                    className="w-full h-full"
                     borderRadius="1.2rem"
                     duration={1.2}
                 />
@@ -32,7 +32,7 @@ const SearchResultCardSkeleton = () => {
                         highlightColor="#444"
                         className="w-[2.4rem] h-[2.4rem] shrink-0"
                         circle
-                        containerClassName="w-[2.4rem]"
+                        containerClassName="w-[2.4rem] shrink-0"
                     />
                     <Skeleton
                         baseColor="#202020"

@@ -105,7 +105,10 @@ const VideoRecommendations = ({
                 new Array(12)
                     .fill(0)
                     .map((_, index) => (
-                        <VideoRecommendationCardSkeleton key={index} />
+                        <VideoRecommendationCardSkeleton
+                            watchDisplayMode={watchPageDisplayMode}
+                            key={index}
+                        />
                     ))}
         </InfiniteScroll>
     );
