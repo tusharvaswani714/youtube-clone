@@ -16,10 +16,10 @@ const VideoDetails = () => {
         }
     });
     return (
-        <div className="mt-[2rem] mb-[2.4rem]">
+        <div className="mt-[2rem]">
             {videoDetails ? (
                 <>
-                    <div className="text-4xl font-semibold text-primary-light-900">
+                    <div className="text-3xl font-semibold text-primary-light-900">
                         {videoDetails.title}
                     </div>
                     <div className="my-[1.6rem] flex items-center justify-between">
@@ -54,7 +54,7 @@ const VideoDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="text-primary-light-900 font-medium flex items-center gap-6 bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.2)] px-6 py-3 rounded-[1.8rem] cursor-default">
+                        <div className="text-[1.4rem] text-primary-light-900 font-medium flex items-center gap-4 bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.2)] px-6 py-3 rounded-[1.8rem] cursor-default">
                             <AiOutlineLike className="text-4xl" />
                             {millify(videoDetails.likeCount, {
                                 precision: 1,

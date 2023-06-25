@@ -72,12 +72,12 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
         enabled: !reply && showReplies,
     });
     return (
-        <div className="flex gap-[1.6rem]">
+        <div className="flex gap-[1.2rem] sm:gap-[1.6rem]">
             <Link to={`/channel/${author.id}`}>
                 <div
                     className={classNames("rounded-full bg-cover bg-center", {
                         "w-[2.4rem] h-[2.4rem]": reply,
-                        "w-16 h-16": !reply,
+                        "sm:w-16 sm:h-16 w-14 h-14": !reply,
                     })}
                     style={{
                         backgroundImage: `url("${author.profileURL}")`,
@@ -85,7 +85,7 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                 />
             </Link>
             <div className="flex flex-1 flex-col gap-1">
-                <div className="text-[1.4rem] flex gap-2">
+                <div className="text-[1.2rem] sm:text-[1.4rem] flex gap-2">
                     <Link
                         to={`/channel/${author.id}`}
                         className="text-primary-light-900 font-medium"
@@ -97,12 +97,14 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                         {publishedAt !== updatedAt ? "(edited)" : null}
                     </span>
                 </div>
-                <div className="text-primary-light-900 mb-2">{content}</div>
+                <div className="text-[1.4rem] sm:text-[1.6rem] text-primary-light-900 mb-2">
+                    {content}
+                </div>
                 <div className="flex gap-6">
                     <div className="flex items-center gap-2">
-                        <BiLike className="text-primary-light-900 text-4xl" />
+                        <BiLike className="text-primary-light-900 text-3xl sm:text-4xl" />
                         {numOfLikes ? (
-                            <span className="text-primary-light-800 text-[1.4rem]">
+                            <span className="text-primary-light-800 text-[1.2rem] sm:text-[1.4rem]">
                                 {millify(numOfLikes, {
                                     precision: 1,
                                 })}
@@ -110,7 +112,7 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                         ) : null}
                     </div>
                     <div>
-                        <BiDislike className="text-primary-light-900 text-4xl" />
+                        <BiDislike className="text-primary-light-900 text-3xl sm:text-4xl" />
                     </div>
                 </div>
                 {!data.reply && data.numOfReplies ? (
@@ -123,12 +125,12 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                                 return newValue;
                             })
                         }
-                        className="mt-2 inline-flex max-w-max items-center gap-4 -ml-5 px-[1.6rem] py-[0.8rem] text-secondary-blue-900 font-medium select-none hover:bg-secondary-blue-100 rounded-[2.2rem]"
+                        className="mt-2 inline-flex max-w-max items-center gap-4 -ml-5 px-[1.6rem] py-[0.8rem] text-[1.4rem] sm:text-[1.6rem] text-secondary-blue-900 font-medium select-none hover:bg-secondary-blue-100 rounded-[2.2rem]"
                     >
                         {showReplies ? (
-                            <FiChevronUp className="text-[2rem]" />
+                            <FiChevronUp className="text-[1.8rem] sm:text-[2rem]" />
                         ) : (
-                            <FiChevronDown className="text-[2rem]" />
+                            <FiChevronDown className="text-[1.8rem] sm:text-[2rem]" />
                         )}
                         {data.numOfReplies} replies
                     </button>
@@ -162,9 +164,9 @@ const CommentOrCommentReply = (data: CommentOrCommentReplyInterface) => {
                         {hasNextPage && (
                             <button
                                 onClick={() => fetchNextPage()}
-                                className="mt-2 inline-flex max-w-max items-center gap-4 -ml-5 px-[1.6rem] py-[0.8rem] text-secondary-blue-900 font-medium select-none hover:bg-secondary-blue-100 rounded-[2.2rem]"
+                                className="mt-2 inline-flex max-w-max items-center gap-4 -ml-5 px-[1.6rem] py-[0.8rem] text-[1.4rem] sm:text-[1.6rem] text-secondary-blue-900 font-medium select-none hover:bg-secondary-blue-100 rounded-[2.2rem]"
                             >
-                                <BsArrow90DegDown className="-rotate-90 text-[2rem]" />
+                                <BsArrow90DegDown className="-rotate-90 text-[1.8rem] sm:text-[2rem]" />
                                 Show more replies
                             </button>
                         )}

@@ -18,6 +18,7 @@ const VideoPlayerAndDetails = () => {
     );
     useQuery({
         queryKey: ["videoDetails", videoId],
+        refetchOnMount: false,
         queryFn: async () => {
             if (videoId) {
                 const getVideoDetailsByIdsResponse = await getVideoDetailsByIds(

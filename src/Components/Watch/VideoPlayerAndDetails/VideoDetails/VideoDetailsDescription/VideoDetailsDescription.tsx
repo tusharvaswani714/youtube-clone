@@ -24,13 +24,13 @@ const VideoDetailsDescription = () => {
     return (
         <div
             className={classNames(
-                "cursor-pointer p-[1.2rem] text-primary-light-900 bg-[rgba(255,255,255,0.1)] rounded-[1.2rem] font-normal",
+                "text-[1.4rem] cursor-pointer p-[1.2rem] text-primary-light-900 bg-[rgba(255,255,255,0.1)] rounded-[1.2rem] font-normal",
                 {
                     "hover:bg-[rgba(255,255,255,0.2)]": !showMore,
                 }
             )}
         >
-            <div className="font-bold">
+            <div className="font-medium">
                 <span className="mr-3">
                     {millify(videoDetails.viewCount, {
                         precision: 1,
@@ -40,20 +40,18 @@ const VideoDetailsDescription = () => {
                     {timeAgo.format(new Date(videoDetails.publishedAt))}
                 </span>
             </div>
-            <div>
-                <div
-                    className={classNames("overflow-hidden my-[0.2rem]", {
-                        "max-h-20": !showMore,
-                    })}
-                >
-                    {videoDetails.desc}
-                </div>
-                <div
-                    className="font-bold"
-                    onClick={() => setShowMore((prev) => !prev)}
-                >
-                    Show {showMore ? "less" : "more"}
-                </div>
+            <div
+                className={classNames("overflow-hidden my-[0.4rem]", {
+                    "max-h-24": !showMore,
+                })}
+            >
+                {videoDetails.desc}
+            </div>
+            <div
+                className="font-medium"
+                onClick={() => setShowMore((prev) => !prev)}
+            >
+                Show {showMore ? "less" : "more"}
             </div>
         </div>
     );

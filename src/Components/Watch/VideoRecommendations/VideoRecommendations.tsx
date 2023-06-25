@@ -10,14 +10,22 @@ import InfiniteScroll from "react-infinite-scroller";
 import React from "react";
 import VideoRecommendationCardSkeleton from "./VideoRecommendationCardSkeleton/VideoRecommendationCardSkeleton";
 import getMaxResolutionImage from "../../../lib/getMaxResolutionImage";
+import { WatchPageDisplayModes } from "../../../config/enums";
 
-const VideoRecommendations = () => {
+interface VideoRecommendationsProps {
+    watchPageDisplayMode: WatchPageDisplayModes;
+}
+
+const VideoRecommendations = ({
+    watchPageDisplayMode,
+}: VideoRecommendationsProps) => {
     const categoryId = useVideoDetailsStore(
         (state) => state.videoDetails?.categoryId
     );
     const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
         useInfiniteQuery({
             queryKey: ["videoRecommendations", categoryId],
+            refetchOnMount: false,
             enabled: !!categoryId,
             queryFn: async ({ pageParam }) => {
                 const getVideosResponse = await getVideos({
@@ -67,21 +75,32 @@ const VideoRecommendations = () => {
         <InfiniteScroll
             className="flex flex-col gap-4"
             loadMore={() => fetchNextPage()}
-            hasMore={hasNextPage}
+            hasMore={
+                watchPageDisplayMode === WatchPageDisplayModes.DEFAULT &&
+                hasNextPage
+            }
             threshold={10}
         >
-            {data?.pages.map((videoRecommendationsPage, index) => (
-                <React.Fragment key={index}>
-                    {videoRecommendationsPage.recommendationItems.map(
-                        (recommendation, index) => (
-                            <VideoRecommendationCard
-                                key={index}
-                                {...recommendation}
-                            />
-                        )
-                    )}
-                </React.Fragment>
-            ))}
+            {data?.pages
+                .slice(
+                    0,
+                    watchPageDisplayMode === WatchPageDisplayModes.ONE_COLUMN
+                        ? 1
+                        : data.pages.length
+                )
+                .map((videoRecommendationsPage, index) => (
+                    <React.Fragment key={index}>
+                        {videoRecommendationsPage.recommendationItems.map(
+                            (recommendation, index) => (
+                                <VideoRecommendationCard
+                                    key={index}
+                                    watchDisplayMode={watchPageDisplayMode}
+                                    recommendation={recommendation}
+                                />
+                            )
+                        )}
+                    </React.Fragment>
+                ))}
             {(isFetching || isFetchingNextPage || !categoryId) &&
                 new Array(12)
                     .fill(0)

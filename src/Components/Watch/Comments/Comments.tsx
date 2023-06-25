@@ -10,8 +10,14 @@ import {
 import InfiniteScroll from "react-infinite-scroller";
 import { CommentSkeleton } from "./CommentSkeleton/CommentSkeleton";
 import CommentOrCommentReply from "./CommentOrCommentReply/CommentOrCommentReply";
+import classNames from "classnames";
+import { WatchPageDisplayModes } from "../../../config/enums";
 
-const Comments = () => {
+interface CommentsProps {
+    watchPageDisplayMode: WatchPageDisplayModes;
+}
+
+const Comments = ({ watchPageDisplayMode }: CommentsProps) => {
     const commentCount = useVideoDetailsStore(
         (state) => state.videoDetails?.commentCount
     );
@@ -19,6 +25,7 @@ const Comments = () => {
     const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
         useInfiniteQuery({
             queryKey: ["comments", videoId],
+            refetchOnMount: false,
             queryFn: async ({ pageParam }) => {
                 if (videoId) {
                     const getCommentsByVideoIdResponse =
@@ -69,8 +76,13 @@ const Comments = () => {
         });
     if (!commentCount) return null;
     return (
-        <div className="flex flex-col gap-[3.2rem]">
-            <div className="text-primary-light-900 text-[2rem] capitalize">
+        <div
+            className={classNames("flex flex-col gap-[2rem]", {
+                "mt-[2.4rem]":
+                    watchPageDisplayMode === WatchPageDisplayModes.DEFAULT,
+            })}
+        >
+            <div className="text-primary-light-900 text-[1.8rem] capitalize">
                 {commaNumber(commentCount)} comments
             </div>
             <InfiniteScroll
