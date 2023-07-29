@@ -13,7 +13,7 @@ const SearchResultCardSkeleton = () => {
                     duration={1.2}
                 />
             </div>
-            <div className="overflow-hidden flex flex-1 flex-col gap-[1.2rem] text-primary-light-800">
+            <div className="flex flex-1 flex-col gap-[1.2rem] text-primary-light-800">
                 <div>
                     <Skeleton
                         baseColor="#202020"
