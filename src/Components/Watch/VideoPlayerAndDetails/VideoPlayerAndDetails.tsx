@@ -71,7 +71,7 @@ const VideoPlayerAndDetails = () => {
         enabled: !!videoId,
     });
     return (
-        <div>
+        <div className="video-player-and-details-container">
             <VideoPlayer />
             <VideoDetails />
         </div>

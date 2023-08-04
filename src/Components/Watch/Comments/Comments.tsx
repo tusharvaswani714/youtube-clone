@@ -10,14 +10,8 @@ import {
 import InfiniteScroll from "react-infinite-scroller";
 import { CommentSkeleton } from "./CommentSkeleton/CommentSkeleton";
 import CommentOrCommentReply from "./CommentOrCommentReply/CommentOrCommentReply";
-import classNames from "classnames";
-import { WatchPageDisplayModes } from "../../../config/enums";
 
-interface CommentsProps {
-    watchPageDisplayMode: WatchPageDisplayModes;
-}
-
-const Comments = ({ watchPageDisplayMode }: CommentsProps) => {
+const Comments = () => {
     const commentCount = useVideoDetailsStore(
         (state) => state.videoDetails?.commentCount
     );
@@ -76,12 +70,7 @@ const Comments = ({ watchPageDisplayMode }: CommentsProps) => {
         });
     if (!commentCount) return null;
     return (
-        <div
-            className={classNames("flex flex-col gap-[2rem]", {
-                "mt-[2.4rem]":
-                    watchPageDisplayMode === WatchPageDisplayModes.DEFAULT,
-            })}
-        >
+        <div className="video-comments flex flex-col gap-[2rem]">
             <div className="text-primary-light-900 text-[1.8rem] capitalize">
                 {commaNumber(commentCount)} comments
             </div>

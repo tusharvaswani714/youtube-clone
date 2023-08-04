@@ -72,45 +72,49 @@ const VideoRecommendations = ({
             getNextPageParam: (lastPage) => lastPage.nextPageToken,
         });
     return (
-        <InfiniteScroll
-            className="flex flex-col gap-4"
-            loadMore={() => fetchNextPage()}
-            hasMore={
-                watchPageDisplayMode === WatchPageDisplayModes.DEFAULT &&
-                hasNextPage
-            }
-            threshold={10}
-        >
-            {data?.pages
-                .slice(
-                    0,
-                    watchPageDisplayMode === WatchPageDisplayModes.ONE_COLUMN
-                        ? 1
-                        : data.pages.length
-                )
-                .map((videoRecommendationsPage, index) => (
-                    <React.Fragment key={index}>
-                        {videoRecommendationsPage.recommendationItems.map(
-                            (recommendation, index) => (
-                                <VideoRecommendationCard
-                                    key={index}
-                                    watchDisplayMode={watchPageDisplayMode}
-                                    recommendation={recommendation}
-                                />
-                            )
-                        )}
-                    </React.Fragment>
-                ))}
-            {(isFetching || isFetchingNextPage || !categoryId) &&
-                new Array(12)
-                    .fill(0)
-                    .map((_, index) => (
-                        <VideoRecommendationCardSkeleton
-                            watchDisplayMode={watchPageDisplayMode}
-                            key={index}
-                        />
+        <div className="video-recommendations">
+            <InfiniteScroll
+                height="100%"
+                className="flex flex-col gap-4"
+                loadMore={() => fetchNextPage()}
+                hasMore={
+                    watchPageDisplayMode === WatchPageDisplayModes.DEFAULT &&
+                    hasNextPage
+                }
+                threshold={10}
+            >
+                {data?.pages
+                    .slice(
+                        0,
+                        watchPageDisplayMode ===
+                            WatchPageDisplayModes.ONE_COLUMN
+                            ? 1
+                            : data.pages.length
+                    )
+                    .map((videoRecommendationsPage, index) => (
+                        <React.Fragment key={index}>
+                            {videoRecommendationsPage.recommendationItems.map(
+                                (recommendation, index) => (
+                                    <VideoRecommendationCard
+                                        key={index}
+                                        watchDisplayMode={watchPageDisplayMode}
+                                        recommendation={recommendation}
+                                    />
+                                )
+                            )}
+                        </React.Fragment>
                     ))}
-        </InfiniteScroll>
+                {(isFetching || isFetchingNextPage || !categoryId) &&
+                    new Array(12)
+                        .fill(0)
+                        .map((_, index) => (
+                            <VideoRecommendationCardSkeleton
+                                watchDisplayMode={watchPageDisplayMode}
+                                key={index}
+                            />
+                        ))}
+            </InfiniteScroll>
+        </div>
     );
 };
 

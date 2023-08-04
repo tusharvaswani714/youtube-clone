@@ -20,3 +20,34 @@ input:focus-visible {
 .swiper-slide {
     width: auto !important;
 }
+
+.watch-page-grid-container {
+    display: grid;
+    grid-template-areas:
+        "video-player-and-details video-recommendations"
+        "video-comments video-recommendations";
+    grid-template-columns: 62% 38%;
+    grid-gap: 2.4rem;
+}
+
+@media screen and (max-width: 1060px) {
+    .watch-page-grid-container {
+        grid-template-areas:
+            "video-player-and-details"
+            "video-recommendations"
+            "video-comments";
+        grid-template-columns: 1fr;
+    }
+}
+
+.video-player-and-details-container {
+    grid-area: video-player-and-details;
+}
+
+.video-recommendations {
+    grid-area: video-recommendations;
+}
+
+.video-comments {
+    grid-area: video-comments;
+}
